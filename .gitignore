@@ -1,0 +1,7 @@
+# python
+*.egg-info/
+dist/
+build/
+
+# === macOS ===
+.DS_Store
