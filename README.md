@@ -3,6 +3,7 @@
 ⚠️ UNDER CONSTRUCTION ⚠️
 
 > _"The main focus when developing gruvbox is to keep colors easily distinguishable, contrast enough and still pleasant for the eyes"_ - [morhetz](https://github.com/morhetz)
+
 ![example of gruvbox-factory](https://raw.githubusercontent.com/paulopacitti/gruvbox-factory/master/example.png)
 
 - A simple `cli` to ~~convert~~ manufacture a [gruvbox](https://github.com/morhetz/gruvbox) themed wallpaper;
