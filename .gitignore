@@ -4,8 +4,8 @@ dist/
 build/
 
 # manufactured images
-gruvbox-factory/*.png
-gruvbox-factory/*.jpg
+factory/*.png
+factory/*.jpg
 
 # === macOS ===
 .DS_Store
