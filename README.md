@@ -1,6 +1,6 @@
 # gruvbox-factory 🏭
-![GitHub](https://img.shields.io/github/license/paulopacitti/gruvbox-factory?color=%23b8bb26&style=flat-square)
-![PyPI](https://img.shields.io/pypi/v/gruvbox-factory?color=%23fb4934&style=flat-square)
+![License](https://img.shields.io/github/license/paulopacitti/gruvbox-factory?color=b8bb26&style=flat-square)
+![PyPI](https://img.shields.io/pypi/v/gruvbox-factory?color=fb4934&style=flat-square)
 
 > _"The main focus when developing gruvbox is to keep colors easily distinguishable, contrast enough and still pleasant for the eyes"_ - [morhetz](https://github.com/morhetz)
 
