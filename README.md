@@ -13,6 +13,10 @@
 
 ## Usage ⌨️
 - Type `gruvbox-factory` **anywhere** in your terminal :sparkles:
+
+or
+
+- Type `gruvbox-factory [FILEPATH]` to pass the target as an argument
   
 ### Credits 🎥
 - 📦 Using [morhetz's gruvbox color scheme](https://github.com/morhetz);
