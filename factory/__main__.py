@@ -12,28 +12,23 @@ from rich.panel import Panel
 
 def main():
 
-    global gruvbox_factory, console
-    gruvbox_factory = GoNord()
-    gruvbox_factory.reset_palette()
-    add_gruvbox_palette()
-
     signal.signal(signal.SIGINT, signal_handler)
     console = Console()
 
     # Checks if there's an argument
     if len(sys.argv) > 1:
-        image_file = fromCommandArgument()
+        image_file = fromCommandArgument(console)
     else:
-        image_file = fromTui()
-    process_image(image_file)
+        image_file = fromTui(console)
+    process_image(image_file, console)
 
 
 
 # Gets the file path from the Argument
-def fromCommandArgument():
+def fromCommandArgument(console):
 
     command_parser = argparse.ArgumentParser(
-        description='A simple cli to convert manufacture a gruvbox themed wallpaper;'
+        description='A simple cli to manufacture a gruvbox themed wallpaper.'
     )
     command_parser.add_argument('Path',
                        metavar='path',
@@ -49,13 +44,16 @@ def fromCommandArgument():
 
 
 # Gets the file path from user input
-def fromTui():
+def fromTui(console):
 
     console.print(Panel('🏭 [bold green] Gruvbox Factory [/] 🏭', expand=False, border_style='yellow'))
     console.print('⚠️ WARNING ⚠️\n[italic]make sure you\'re in the same directory of the image you want to convert [/]\n')
     return console.input('🖼️ [bold yellow]Which image do you want to manufacture?[/] ')
 
-def process_image(image_file):
+def process_image(image_file, console):
+    gruvbox_factory = GoNord()
+    gruvbox_factory.reset_palette()
+    add_gruvbox_palette(gruvbox_factory)
     try:
         image = gruvbox_factory.open_image(image_file)
     except:
@@ -75,7 +73,7 @@ def process_image(image_file):
     console.print('✅ [bold green]Done![/] [green](saved as ' + save_path + ')[/]')
 
 
-def add_gruvbox_palette():
+def add_gruvbox_palette(gruvbox_factory):
     current_path = Path(__file__).parent.absolute()
     palette = open(str(current_path) + '/gruvbox.txt', 'r')
     for line in palette.readlines():
