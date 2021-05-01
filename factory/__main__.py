@@ -1,70 +1,90 @@
-import os
 import signal
+import argparse
 import sys
-from pathlib import Path
+import os
 
 from ImageGoNord import GoNord
 
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import IntPrompt
-from rich.progress import track
 
 
 def main():
+
     signal.signal(signal.SIGINT, signal_handler)
     console = Console()
 
-    global gruvbox_factory
     gruvbox_factory = GoNord()
     gruvbox_factory.reset_palette()
-    add_gruvbox_palette()
+    add_gruvbox_palette(gruvbox_factory)
 
-    # Parse arguments / input as a list
-    if len(sys.argv) == 1:
-        console.print(
-            Panel(
-                "🏭 [bold green] Gruvbox Factory [/] 🏭",
-                expand=False,
-                border_style="yellow",
-            )
-        )
-        image_paths = console.input("🖼️ [bold yellow]Which image do you want to manufacture?[/]").split()
+    # Checks if there's an argument
+    if len(sys.argv) > 1:
+        image_paths = fromCommandArgument(console)
     else:
-        image_paths = sys.argv[1:]
+        image_paths = fromTui(console)
 
-    # Convert each image to gruvbox colors
     for image_path in image_paths:
-        try:
-            image = gruvbox_factory.open_image(image_path)
-        except:
+        if os.path.isfile(image_path):
+            process_image(image_path, console, gruvbox_factory)
+        else:
             console.print(
-                f"❌ [red]We had a problem in the pipeline! Make sure your picure can be found at '{image_path}'! [/]"
+                f"❌ [red]We had a problem in the pipeline! \nThe image at '{image_path}' could not be found! \nSkipping... [/]"
             )
-            sys.exit(1)
-        console.print(f"🔨 [yellow]manufacturing gruvbox wallpaper '{image_path}'...[/]")
-        gruvbox_factory.convert_image(
-            image,
-            save_path=(
-                os.path.join(
-                    os.path.dirname(image_path),
-                    "gruvbox_" + os.path.basename(image_path),
-                )
-            ),
+            continue
+
+
+# Gets the file path from the Argument
+def fromCommandArgument(console):
+
+    command_parser = argparse.ArgumentParser(
+        description="A simple cli to manufacture gruvbox themed wallpapers."
+    )
+    command_parser.add_argument(
+        "Path", metavar="path", nargs="+", type=str, help="The path(s) to the image(s)."
+    )
+    args = command_parser.parse_args()
+
+    return args.Path
+
+
+# Gets the file path from user input
+def fromTui(console):
+
+    console.print(
+        Panel(
+            "🏭 [bold green] Gruvbox Factory [/] 🏭", expand=False, border_style="yellow"
         )
+    )
 
-        console.print(
-            "✅ [bold green]Done![/] [green](saved as gruvbox_"
-            + os.path.basename(image_path)
-            + ")[/]"
-        )
+    return [
+        os.path.expanduser(path)
+        for path in console.input(
+            "🖼️ [bold yellow]Which image(s) do you want to manufacture?[/] "
+        ).split()
+    ]
 
 
-def add_gruvbox_palette():
-    current_path = Path(__file__).parent.absolute()
-    palette = open(str(current_path) + "/gruvbox.txt", "r")
-    for line in palette.readlines():
-        gruvbox_factory.add_color_to_palette(line[:-1])
+def process_image(image_path, console, gruvbox_factory):
+    image = gruvbox_factory.open_image(image_path)
+
+    console.print(f"🔨 [yellow]manufacturing '{os.path.basename(image_path)}'...[/]")
+
+    # TODO: might be a better idea to save the new Image in the same directory the command is being run from
+    save_path = os.path.join(
+        os.path.dirname(image_path), "gruvbox_" + os.path.basename(image_path)
+    )
+
+    gruvbox_factory.convert_image(image, save_path=(save_path))
+    console.print(f"✅ [bold green]Done![/] [green](saved at '{save_path}')[/]")
+
+
+def add_gruvbox_palette(gruvbox_factory):
+    palette_path = os.path.join(os.getcwd(), "gruvbox.txt")
+
+    with open(palette_path, "r") as f:
+        for line in f.readlines():
+            gruvbox_factory.add_color_to_palette(line[:-1])
 
 
 ## handle CTRL + C
