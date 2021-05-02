@@ -60,7 +60,7 @@ def fromTui(console):
     return [
         os.path.expanduser(path)
         for path in console.input(
-            "🖼️ [bold yellow]Which image(s) do you want to manufacture?[/] "
+            "🖼️ [bold yellow]Which image(s) do you want to manufacture? (image paths separated by spaces):[/] "
         ).split()
     ]
 
