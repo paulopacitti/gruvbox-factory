@@ -7,16 +7,15 @@
 ![example of gruvbox-factory](https://raw.githubusercontent.com/paulopacitti/gruvbox-factory/master/example.png)
 
 - A simple `cli` to ~~convert~~ manufacture a [gruvbox](https://github.com/morhetz/gruvbox) themed wallpaper;
+- Now supports "hipster" mode, passing image paths as arguments;
 
 ## Installation ⬇️
 `pip3 install gruvbox-factory`
 
 ## Usage ⌨️
-- Type `gruvbox-factory` **anywhere** in your terminal :sparkles:
-
-or
-
-- Type `gruvbox-factory [FILEPATH]` to pass the target as an argument
+The `cli` has two modes:
+- 🔮 wizard: type `gruvbox-factory` **anywhere** in your terminal and folllow the instructions ✨
+- 💽 hipster: type `gruvbox-factory FILEPATH_1 FILEPATH_2...` (paths separated by spaces) to pass the target images as arguments;
   
 ### Credits 🎥
 - 📦 Using [morhetz's gruvbox color scheme](https://github.com/morhetz);
