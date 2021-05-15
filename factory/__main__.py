@@ -2,12 +2,12 @@ import signal
 import argparse
 import sys
 import os
+from pathlib import Path
 
 from ImageGoNord import GoNord
 
 from rich.console import Console
 from rich.panel import Panel
-
 
 def main():
 
@@ -33,10 +33,8 @@ def main():
             )
             continue
 
-
 # Gets the file path from the Argument
 def fromCommandArgument(console):
-
     command_parser = argparse.ArgumentParser(
         description="A simple cli to manufacture gruvbox themed wallpapers."
     )
@@ -46,7 +44,6 @@ def fromCommandArgument(console):
     args = command_parser.parse_args()
 
     return args.Path
-
 
 # Gets the file path from user input
 def fromTui(console):
@@ -64,7 +61,6 @@ def fromTui(console):
         ).split()
     ]
 
-
 def process_image(image_path, console, gruvbox_factory):
     image = gruvbox_factory.open_image(image_path)
 
@@ -78,20 +74,17 @@ def process_image(image_path, console, gruvbox_factory):
     gruvbox_factory.convert_image(image, save_path=(save_path))
     console.print(f"✅ [bold green]Done![/] [green](saved at '{save_path}')[/]")
 
-
 def add_gruvbox_palette(gruvbox_factory):
-    palette_path = os.path.join(os.getcwd(), "gruvbox.txt")
+    current_path = Path(__file__).parent.absolute()
 
-    with open(palette_path, "r") as f:
+    with open(str(current_path) + '/gruvbox.txt', 'r') as f:
         for line in f.readlines():
             gruvbox_factory.add_color_to_palette(line[:-1])
-
 
 ## handle CTRL + C
 def signal_handler(signal, frame):
     print()
     sys.exit(0)
-
 
 if __name__ == "__main__":
     main()
