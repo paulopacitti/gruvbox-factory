@@ -8,6 +8,7 @@
 
 - A simple `cli` to ~~convert~~ manufacture a [gruvbox](https://github.com/morhetz/gruvbox) themed wallpaper;
 - Now supports "hipster" mode, passing image paths as arguments;
+- Now has two different palettes: *panther* "pink" and *snoopy* white;
 
 ## Installation ⬇️
 `pip3 install gruvbox-factory`
@@ -15,8 +16,8 @@
 ## Usage ⌨️
 The `cli` has two modes:
 - 🔮 wizard: type `gruvbox-factory` **anywhere** in your terminal and folllow the instructions ✨
-- 💽 hipster: type `gruvbox-factory FILEPATH_1 FILEPATH_2...` (paths separated by spaces) to pass the target images as arguments;
-  
+- 💽 hipster: type `gruvbox-factory -h` and check how to use in CLI mode :wink
+
 ### Credits 🎥
 - 📦 Using [morhetz's gruvbox color scheme](https://github.com/morhetz);
 - 🐈 **Made** with [Schrodinger-Hat's ImageGoNord](https://github.com/Schrodinger-Hat), but with the gruvbox palette;
@@ -24,4 +25,7 @@ The `cli` has two modes:
 
 ## Contributing 💕
 - ⭐ If you like it, leave your **star** in this project 
-- 💟 If you would like to complain/suggest/contribute to this project, **feel free to open a issue** 
+- 💟 If you would like to complain/suggest/contribute to this project, **feel free to open a issue**
+- ✏️ Add your name in the **"Contributors** section after when opening a PR
+
+## Contributors ✏️ 
