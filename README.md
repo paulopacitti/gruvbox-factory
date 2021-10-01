@@ -14,7 +14,7 @@
 
 ## Usage ⌨️
 The `cli` has two modes:
-- 🔮 wizard: type `gruvbox-factory` **anywhere** in your terminal and folllow the instructions ✨
+- 🔮 wizard: type `gruvbox-factory` **anywhere** in your terminal and follow the instructions ✨
 - 💽 hipster: type `gruvbox-factory FILEPATH_1 FILEPATH_2...` (paths separated by spaces) to pass the target images as arguments;
   
 ### Credits 🎥
