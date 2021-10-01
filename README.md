@@ -16,7 +16,7 @@
 ## Usage ⌨️
 The `cli` has two modes:
 - 🔮 wizard: type `gruvbox-factory` **anywhere** in your terminal and folllow the instructions ✨
-- 💽 hipster: type `gruvbox-factory -h` and check how to use in CLI mode :wink
+- 💽 hipster: type `gruvbox-factory -h` and check how to use in CLI mode 😉
 
 ### Credits 🎥
 - 📦 Using [morhetz's gruvbox color scheme](https://github.com/morhetz);
