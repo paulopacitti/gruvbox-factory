@@ -10,19 +10,22 @@ from rich.console import Console
 from rich.panel import Panel
 
 def main():
-
     signal.signal(signal.SIGINT, signal_handler)
     console = Console()
+    args = fromCommandArgument(console)
 
     gruvbox_factory = GoNord()
     gruvbox_factory.reset_palette()
-    add_gruvbox_palette(gruvbox_factory)
 
     # Checks if there's an argument
-    if len(sys.argv) > 1:
-        image_paths = fromCommandArgument(console)
+    if len(sys.argv) > 2:
+        image_paths = args.images
+        add_gruvbox_palette(gruvbox_factory, args.palette)
     else:
-        image_paths = fromTui(console)
+        image_paths, palette = fromTui(console)
+        if palette == None:
+            return
+        add_gruvbox_palette(gruvbox_factory, palette)
 
     for image_path in image_paths:
         if os.path.isfile(image_path):
@@ -38,28 +41,34 @@ def fromCommandArgument(console):
     command_parser = argparse.ArgumentParser(
         description="A simple cli to manufacture gruvbox themed wallpapers."
     )
-    command_parser.add_argument(
-        "Path", metavar="path", nargs="+", type=str, help="The path(s) to the image(s)."
-    )
-    args = command_parser.parse_args()
 
-    return args.Path
+    command_parser.add_argument("-p", "--palette", choices=["white", "pink"], nargs="?", default="pink", type=str, help="choose your palette, panther 'pink' (default) or snoopy 'white'")
+    command_parser.add_argument("-i", "--images", nargs="+", type=str, help="path(s) to the image(s).")
+
+    args = command_parser.parse_args()
+    return args
 
 # Gets the file path from user input
 def fromTui(console):
-
     console.print(
         Panel(
             "🏭 [bold green] Gruvbox Factory [/] 🏭", expand=False, border_style="yellow"
         )
     )
 
-    return [
-        os.path.expanduser(path)
-        for path in console.input(
+    image_paths = [
+        os.path.expanduser(path) for path in console.input(
             "🖼️ [bold yellow]Which image(s) do you want to manufacture? (image paths separated by spaces):[/] "
         ).split()
     ]
+    palette = console.input("🎨 [bold yellow]Which palette do you prefer? (panther 'pink' or snoopy 'white'):[/] ")
+    if palette not in ['pink', 'white']:
+        console.print(
+                f"❌ [red]We had a problem in the pipeline! \nThe palette you chose is not available! \nShuting down... [/]"
+            )
+        palette = None
+
+    return (image_paths, palette)
 
 def process_image(image_path, console, gruvbox_factory):
     image = gruvbox_factory.open_image(image_path)
@@ -74,10 +83,10 @@ def process_image(image_path, console, gruvbox_factory):
     gruvbox_factory.convert_image(image, save_path=(save_path))
     console.print(f"✅ [bold green]Done![/] [green](saved at '{save_path}')[/]")
 
-def add_gruvbox_palette(gruvbox_factory):
+def add_gruvbox_palette(gruvbox_factory, palette):
     current_path = Path(__file__).parent.absolute()
 
-    with open(str(current_path) + '/gruvbox.txt', 'r') as f:
+    with open(str(current_path) + '/gruvbox-' + palette + '.txt', 'r') as f:
         for line in f.readlines():
             gruvbox_factory.add_color_to_palette(line[:-1])
 

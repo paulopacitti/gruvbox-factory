@@ -1,3 +1,6 @@
+#vscode
+.vscode/
+
 # python
 *.egg-info/
 dist/
