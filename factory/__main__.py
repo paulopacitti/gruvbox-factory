@@ -32,11 +32,12 @@ def main():
     for image_path in image_paths:
         folder, file = split(image_path)
         if file == "*":
+            subfolder = join(dirname(split(image_path)[0]), split(folder)[1])
             # assert that image_path is a folder that can be iterated through
-            if isdir(join(dirname(split(image_path)[0]), split(folder)[1])):
+            if isdir(subfolder):
                 for i in listdir(folder):
                     # TODO: make a check to see that 'i' ends with png, jpg, etc ...
-                    process_image(i, console, gruvbox_factory)
+                    process_image(join(subfolder, i), console, gruvbox_factory)
                 continue
             else:
                 console.print(
