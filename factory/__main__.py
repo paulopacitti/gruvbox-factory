@@ -105,13 +105,6 @@ def process_image(image_path, console, gruvbox_factory):
 
     console.print(f"🔨 [yellow]manufacturing '{basename(image_path)}'...[/]")
 
-    # TODO: might be a better idea to save the new Image in the same directory the command is being run from
-    # NOTE: this is done with the following code:
-    """
-    >>> save_path = os.path.join(
-    >>>     os.getcwd(), "gruvbox_" + os.path.basename(image_path)
-    >>> )
-    """
     save_path = join(dirname(image_path), "gruvbox_" + basename(image_path))
 
     gruvbox_factory.convert_image(image, save_path=(save_path))
