@@ -43,9 +43,10 @@ def main():
                 console.print(
                     f"❌ [red]We had a problem in the pipeline! \n'{split(folder)[1]}' is not a folder that can be iterated through! \nSkipping... [/]"
                 )
-        elif not isfile(image_path):
+                continue
+        elif isdir(image_path):
             console.print(
-                f"❌ [red]We had a problem in the pipeline! \nThe image at '{image_path}' could not be found! \nSkipping... [/]"
+                    f"⏭️ [yellow]Skipping folder: {split(folder)[1]}... [/]"
             )
             continue
         process_image(image_path, console, gruvbox_factory)
