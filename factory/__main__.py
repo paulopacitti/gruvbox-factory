@@ -1,9 +1,8 @@
 import argparse
-import os
 import signal
 import sys
-from os import listdir
-from os.path import *
+from os import getcwd, listdir
+from os.path import basename, dirname, expanduser, join, split
 from pathlib import Path
 
 from ImageGoNord import GoNord
