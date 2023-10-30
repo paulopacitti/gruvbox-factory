@@ -85,8 +85,9 @@ def process_image(image_path, console, gruvbox_factory):
 
 def add_gruvbox_palette(gruvbox_factory, palette):
     current_path = Path(__file__).parent.absolute()
+    file_name = f"gruvbox-{palette}.txt"
 
-    with open(str(current_path) + '/gruvbox-' + palette + '.txt', 'r') as f:
+    with open(os.path.join(current_path, file_name), "r") as f:
         for line in f.readlines():
             gruvbox_factory.add_color_to_palette(line[:-1])
 
