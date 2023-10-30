@@ -45,7 +45,7 @@ def main():
                 continue
         elif isdir(image_path):
             console.print(
-                    f"⏭️ [yellow]Skipping folder: {split(folder)[1]}... [/]"
+                f"⏭️ [yellow]We had a problem in the pipeline! \nSkipping {split(folder)[1]}... [/]"
             )
             continue
         process_image(image_path, console, gruvbox_factory)
