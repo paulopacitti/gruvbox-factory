@@ -60,11 +60,11 @@ def fromCommandArgument(console):
     command_parser.add_argument(
         "-p",
         "--palette",
-        choices=["white", "pink"],
+        choices=["white", "pink", "mix"],
         nargs="?",
         default="pink",
         type=str,
-        help="choose your palette, panther 'pink' (default) or snoopy 'white'",
+        help="choose your palette, panther 'pink' (default), snoopy 'white' or smooth 'mix'",
     )
     command_parser.add_argument(
         "-i", "--images", nargs="+", type=str, help="path(s) to the image(s)."
@@ -89,9 +89,9 @@ def fromTui(console):
         ).split()
     ]
     palette = console.input(
-        "🎨 [bold yellow]Which palette do you prefer? (panther 'pink' or snoopy 'white'):[/] "
+        "🎨 [bold yellow]Which palette do you prefer? (panther 'pink', snoopy 'white' or smooth 'mix'):[/] "
     )
-    if palette not in ["pink", "white"]:
+    if palette not in ["pink", "white", "mix"]:
         console.print(
             f"❌ [red]We had a problem in the pipeline! \nThe palette you chose is not available! \nShuting down... [/]"
         )
