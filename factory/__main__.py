@@ -1,128 +1,200 @@
 import argparse
-import signal
+import os
 import sys
-from os import getcwd, listdir
-from os.path import basename, dirname, expanduser, isdir, join, split
+from dataclasses import dataclass, field
 from pathlib import Path
+from signal import SIGINT, Signals, signal
+from types import FrameType
+from typing import Any, Literal
 
-from ImageGoNord import GoNord
-from rich.console import Console
-from rich.panel import Panel
+import ImageGoNord
+from pick import pick
+from PIL.Image import Image as PilImage
+from PIL.ImageFile import ImageFile
+from rich import console, panel
+
+Palette = Literal["pink", "white", "mix"]
+Image = str
+Images = list[Image]
 
 
-def main():
-    signal.signal(signal.SIGINT, signal_handler)
-    console = Console()
-    args = fromCommandArgument(console)
+@dataclass
+class Arguments:
+    palette: Palette | None
+    images: list[Image] = field(default_factory=list[Image])
 
-    gruvbox_factory = GoNord()
-    gruvbox_factory.reset_palette()
 
-    # Checks if there's an argument
-    if len(sys.argv) > 2:
-        image_paths = args.images
-        add_gruvbox_palette(gruvbox_factory, args.palette)
-    else:
-        image_paths, palette = fromTui(console)
-        if palette == None:
-            return
-        add_gruvbox_palette(gruvbox_factory, palette)
+class Parser(argparse.ArgumentParser):
 
-    for image_path in image_paths:
-        folder, file = split(image_path)
-        if file == "*":
-            subfolder = join(dirname(split(image_path)[0]), split(folder)[1])
-            # assert that image_path is a folder that can be iterated through
-            if isdir(subfolder):
-                for i in listdir(folder):
-                    # TODO: make a check to see that 'i' ends with png, jpg, etc ...
-                    process_image(join(subfolder, i), console, gruvbox_factory)
-                continue
-            else:
-                console.print(
-                    f"❌ [red]We had a problem in the pipeline! \n'{split(folder)[1]}' is not a folder that can be iterated through! \nSkipping... [/]"
-                )
-                continue
-        elif isdir(image_path):
-            console.print(
-                f"⏭️ [yellow]We had a problem in the pipeline! \nSkipping {split(folder)[1]}... [/]"
+    def __init__(self) -> None:
+        super().__init__(
+            description="A simple cli to manufacture Gruvbox themed wallpapers.",
+            prefix_chars="-",
+            argument_default=None,
+            conflict_handler="error",
+        )
+
+        self.add_argument(
+            "-p",
+            "--palette",
+            choices=["white", "pink", "mix"],
+            nargs="?",
+            default="pink",
+            const="pink",
+            help="choose your palette, panther 'pink' (default), snoopy 'white' or smooth 'mix'",
+        )
+        self.add_argument(
+            "-i", "--images", nargs="+", type=str, help="path(s) to the image(s)."
+        )
+
+        self._parsed_args: argparse.Namespace  # type: ignore
+        self.arguments: Arguments  # type: ignore
+
+    def parse(self) -> None:
+        self._parsed_args = self.parse_args()
+        self.arguments = Arguments(
+            palette=self._parsed_args.palette, images=self._parsed_args.images
+        )
+
+
+def is_palette(value: str | None) -> bool:
+    return value in {"pink", "white", "mix"}
+
+
+def signal_handler(signum: int, _frame: FrameType | None = None) -> None:
+    if signum == Signals.SIGINT:
+        sys.exit(2)
+
+
+class Console(console.Console):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def print_title(self) -> None:
+        self.print(
+            panel.Panel(
+                "🏭 [bold green] Gruvbox Factory [/] 🏭",
+                expand=False,
+                border_style="yellow",
             )
-            continue
-        process_image(image_path, console, gruvbox_factory)
-
-
-# Gets the file path from the Argument
-def fromCommandArgument(console):
-    command_parser = argparse.ArgumentParser(
-        description="A simple cli to manufacture gruvbox themed wallpapers."
-    )
-
-    command_parser.add_argument(
-        "-p",
-        "--palette",
-        choices=["white", "pink", "mix"],
-        nargs="?",
-        default="pink",
-        type=str,
-        help="choose your palette, panther 'pink' (default), snoopy 'white' or smooth 'mix'",
-    )
-    command_parser.add_argument(
-        "-i", "--images", nargs="+", type=str, help="path(s) to the image(s)."
-    )
-
-    args = command_parser.parse_args()
-    return args
-
-
-# Gets the file path from user input
-def fromTui(console):
-    console.print(
-        Panel(
-            "🏭 [bold green] Gruvbox Factory [/] 🏭", expand=False, border_style="yellow"
         )
+
+
+def select_palette() -> Palette:
+    prompt: str = (
+        "🎨 [bold yellow]Palette (panther 'pink', snoopy 'white' or smooth 'mix'):[/] "
     )
+    options: list[str] = ["pink", "white", "mix"]
 
-    image_paths = [
-        expanduser(path)
-        for path in console.input(
-            "🖼️ [bold yellow]Which image(s) do you want to manufacture? (image paths separated by spaces):[/] "
-        ).split()
-    ]
-    palette = console.input(
-        "🎨 [bold yellow]Which palette do you prefer? (panther 'pink', snoopy 'white' or smooth 'mix'):[/] "
-    )
-    if palette not in ["pink", "white", "mix"]:
-        console.print(
-            f"❌ [red]We had a problem in the pipeline! \nThe palette you chose is not available! \nShuting down... [/]"
-        )
-        palette = None
+    value: Any = pick(options, title=prompt, clear_screen=False)
+    _, selection = value
 
-    return (image_paths, palette)
+    return selection if is_palette(selection) else "white"
 
 
-def process_image(image_path, console, gruvbox_factory):
-    image = gruvbox_factory.open_image(image_path)
-
-    console.print(f"🔨 [yellow]manufacturing '{basename(image_path)}'...[/]")
-
-    save_path = join(dirname(image_path), "gruvbox_" + basename(image_path))
-
-    gruvbox_factory.convert_image(image, save_path=(save_path))
-    console.print(f"✅ [bold green]Done![/] [green](saved at '{save_path}')[/]")
+@dataclass
+class Factory(ImageGoNord.GoNord):
+    def __init__(self) -> None:
+        super().__init__()
+        self.image_paths: list[str] = []
+        self.reset_palette()
 
 
-def add_gruvbox_palette(gruvbox_factory, palette):
-    current_path = Path(__file__).parent.absolute()
-    file_name = f"gruvbox-{palette}.txt"
+class GruvboxFactory:
+    def __init__(self) -> None:
+        _ = signal(SIGINT, signal_handler)
+        self.console: Console = Console()
+        self.parser: Parser = Parser()
+        self.factory: Factory = Factory()
 
-    with open(join(current_path, file_name), "r") as f:
-        for line in f.readlines():
-            gruvbox_factory.add_color_to_palette(line[:-1])
+    def get_palette(self) -> Palette:
+        palette: Palette | None = self.parser.arguments.palette
+        palette = palette if palette is not None else select_palette()
+        if is_palette(palette):
+            return palette
+        raise Exception("This is unreachable.")
+
+    def add_palette(self, palette: str) -> None:
+        cwd: Path = Path(__file__).parent.absolute()
+        path: Path = cwd / f"gruvbox-{palette}.txt"
+        colors: list[str] = []
+
+        try:
+            with open(path) as fd:
+                colors = fd.read().splitlines()
+        except FileNotFoundError:
+            self.console.print(f"❌ [red]Palette file {path} not found.[/]")
+            sys.exit(1)
+
+        for color in colors:
+            self.factory.add_color_to_palette(color)
+
+        return None
+
+    def select_paths(self) -> list[str]:
+        prompt: str = "🖼️ [bold yellow]Image paths (separated by spaces):[/] "
+        user_input = self.console.input(prompt)
+        paths: list[str] = []
+        for raw_path in user_input.split():
+            path = Path(os.path.expanduser(raw_path))
+            if "*" in raw_path:
+                paths.extend(
+                    [str(p) for p in path.parent.glob(path.name) if p.is_file()]
+                )
+            elif path.exists() and path.is_file():
+                paths.append(str(path))
+            else:
+                self.console.print(f"❌ [red]Skipping {raw_path} (not a valid file)[/]")
+        return paths
+
+    def write_image_color(self, path: str) -> None:
+        image: PilImage | ImageFile = self.factory.open_image(path)
+        parent = os.path.dirname(path)
+        base = os.path.basename(path)
+        dest = os.path.join(parent, f"gruvbox_{base}")
+
+        self.console.print(f"🔨 [yellow]manufacturing '{base}' -> {dest}[/]")
+        self.factory.convert_image(image, save_path=dest, parallel_threading=True)
+        self.console.print(f"✅ [bold green]Done![/] [green](saved to '{dest}')[/]")
+
+    def process_images(self, images: Images) -> bool:
+        failed = 0
+        passed = 0
+        for path in images:
+            if os.path.exists(path) and os.path.isfile(path):
+                self.write_image_color(path)
+                passed += 1
+            else:
+                self.console.print(f"❌ [red]Skipping {path} (file not found) [/]")
+                failed += 1
+
+        succeeded: bool = failed == 0
+        if succeeded:
+            self.console.print("🎉 [bold green]All images processed successfully![/]")
+        elif failed and passed:
+            self.console.print("🎉 [bold orange]Some images processed successfully![/]")
+        else:
+            self.console.print("🎉 [bold red]Couldn't process any images[/]")
+            return False
+        return True
 
 
-## handle CTRL + C
-def signal_handler(signal, frame):
-    print()
+def main() -> None:
+
+    factory = GruvboxFactory()
+
+    factory.parser.parse()
+    image_paths = factory.parser.arguments.images
+
+    if len(sys.argv) < 2:
+        sys.exit(factory.parser.print_help())
+
+    palette = factory.get_palette()
+    factory.add_palette(palette)
+
+    if factory.process_images(image_paths) is not True:
+        sys.exit(1)
+
     sys.exit(0)
 
 
