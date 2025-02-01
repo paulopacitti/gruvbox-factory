@@ -7,6 +7,7 @@ image-go-nord==1.2.0
 markdown-it-py==3.0.0
 mdurl==0.1.2
 numpy==2.2.2
+pick==2.4.0
 pillow==11.1.0
 Pygments==2.19.1
 requests==2.32.3
