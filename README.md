@@ -29,3 +29,5 @@ The `cli` has two modes:
 - ✏️ Add your name in the **"Contributors** section after when opening a PR
 
 ## Contributors ✏️ 
+
+- [@H4ppy-04](https://github.com/H4ppy-04)
