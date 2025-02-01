@@ -20,13 +20,28 @@ Images = list[Image]
 
 @dataclass
 class Arguments:
+    """
+    Attributes:
+        palette (Palette | None): The selected palette value.
+        images (list[Image]): List of image path strings.
+    """
+
     palette: Palette | None
     images: list[Image] = field(default_factory=list[Image])
 
 
 class Parser(argparse.ArgumentParser):
+    """
+    A subclass of argparse.ArgumentParser that stores parsed arguments in an Arguments instance.
+    """
 
     def __init__(self) -> None:
+        """
+        Initializes the Parser instance.
+
+        Parameters: None.
+        Raises: None.
+        """
         super().__init__(
             description="A simple cli to manufacture Gruvbox themed wallpapers.",
             prefix_chars="-",
@@ -51,6 +66,15 @@ class Parser(argparse.ArgumentParser):
         self.arguments: Arguments  # type: ignore
 
     def parse(self) -> None:
+        """
+        Parses command-line arguments and stores them in the 'arguments' attribute.
+
+        Sets:
+            self._parsed_args (argparse.Namespace): Raw parsed args.
+            self.arguments (Arguments): Parsed arguments converted to an Arguments instance.
+        Returns: None.
+        Raises: None.
+        """
         self._parsed_args = self.parse_args()
         self.arguments = Arguments(
             palette=self._parsed_args.palette, images=self._parsed_args.images
@@ -58,19 +82,49 @@ class Parser(argparse.ArgumentParser):
 
 
 def is_palette(value: str | None) -> bool:
+    """
+    Args:
+        value (str | None): A palette value.
+    Returns:
+        bool: True if value is one of "pink", "white", or "mix"; otherwise False.
+    """
     return value in {"pink", "white", "mix"}
 
 
 def signal_handler(signum: int, _frame: FrameType | None = None) -> None:
+    """
+    Args:
+        signum (int): The signal number.
+        _frame (FrameType | None): The current stack frame (optional).
+    Raises:
+        SystemExit: Exits with code 2 if signum equals Signals.SIGINT.
+    Returns: None.
+    """
     if signum == Signals.SIGINT:
         sys.exit(2)
 
 
 class Console(console.Console):
+    """
+    Subclass of rich.console.Console.
+    """
+
     def __init__(self) -> None:
+        """
+        Initializes the Console instance.
+
+        Parameters: None.
+        Returns: None.
+        """
         super().__init__()
 
     def print_title(self) -> None:
+        """
+        Prints the title panel.
+
+        Returns:
+            None.
+        """
         self.print(
             panel.Panel(
                 "🏭 [bold green] Gruvbox Factory [/] 🏭",
@@ -81,6 +135,11 @@ class Console(console.Console):
 
 
 def select_palette() -> Palette:
+    """
+    Returns:
+        Palette: The selected palette from a TUI picker. If the selection is not valid,
+                 returns "white".
+    """
     prompt: str = (
         "🎨 [bold yellow]Palette (panther 'pink', snoopy 'white' or smooth 'mix'):[/] "
     )
@@ -94,20 +153,55 @@ def select_palette() -> Palette:
 
 @dataclass
 class Factory(ImageGoNord.GoNord):
+    """
+    Subclass of ImageGoNord.GoNord for manufacturing images.
+
+    Attributes:
+        image_paths (list[str]): List of image file paths.
+    """
+
     def __init__(self) -> None:
+        """
+        Initializes the Factory instance.
+
+        Sets:
+            self.image_paths to an empty list.
+        Calls:
+            self.reset_palette() to initialize the palette.
+        Returns: None.
+        """
         super().__init__()
         self.image_paths: list[str] = []
         self.reset_palette()
 
 
 class GruvboxFactory:
+    """
+    Main class to process Gruvbox themed wallpapers.
+    """
+
     def __init__(self) -> None:
+        """
+        Initializes GruvboxFactory.
+
+        Registers:
+            SIGINT signal with signal_handler.
+        Creates:
+            self.console (Console), self.parser (Parser), and self.factory (Factory).
+        Returns: None.
+        """
         _ = signal(SIGINT, signal_handler)
         self.console: Console = Console()
         self.parser: Parser = Parser()
         self.factory: Factory = Factory()
 
     def get_palette(self) -> Palette:
+        """
+        Returns:
+            Palette: The valid palette value from command-line arguments or via TUI.
+        Raises:
+            Exception: If no valid palette is determined (should be unreachable).
+        """
         palette: Palette | None = self.parser.arguments.palette
         palette = palette if palette is not None else select_palette()
         if is_palette(palette):
@@ -115,6 +209,16 @@ class GruvboxFactory:
         raise Exception("This is unreachable.")
 
     def add_palette(self, palette: str) -> None:
+        """
+        Args:
+            palette (str): The palette name.
+        Reads:
+            File "gruvbox-{palette}.txt" in the directory of this script.
+        Raises:
+            SystemExit: If the palette file is not found.
+        Returns:
+            None.
+        """
         cwd: Path = Path(__file__).parent.absolute()
         path: Path = cwd / f"gruvbox-{palette}.txt"
         colors: list[str] = []
@@ -132,6 +236,12 @@ class GruvboxFactory:
         return None
 
     def select_paths(self) -> list[str]:
+        """
+        Prompts the user to input image paths and validates each.
+
+        Returns:
+            list[str]: List of valid image file paths.
+        """
         prompt: str = "🖼️ [bold yellow]Image paths (separated by spaces):[/] "
         user_input = self.console.input(prompt)
         paths: list[str] = []
@@ -148,6 +258,14 @@ class GruvboxFactory:
         return paths
 
     def write_image_color(self, path: str) -> None:
+        """
+        Args:
+            path (str): The file path to an image.
+        Performs:
+            Opens the image, converts it using the factory, and saves the result.
+        Returns:
+            None.
+        """
         image: PilImage | ImageFile = self.factory.open_image(path)
         parent = os.path.dirname(path)
         base = os.path.basename(path)
@@ -158,6 +276,12 @@ class GruvboxFactory:
         self.console.print(f"✅ [bold green]Done![/] [green](saved to '{dest}')[/]")
 
     def process_images(self, images: Images) -> bool:
+        """
+        Args:
+            images (list[str]): List of image file paths.
+        Returns:
+            bool: True if all images are processed successfully; False otherwise.
+        """
         failed = 0
         passed = 0
         for path in images:
@@ -180,7 +304,19 @@ class GruvboxFactory:
 
 
 def main() -> None:
+    """
+    Main function of the script.
 
+    Performs:
+        - Argument parsing via GruvboxFactory.parser.
+        - Palette determination and palette file processing.
+        - Image processing via GruvboxFactory.
+    Raises:
+        SystemExit: Exits with code from parser.print_help() if insufficient args,
+                    or code 1 if image processing fails.
+    Returns:
+        None.
+    """
     factory = GruvboxFactory()
 
     factory.parser.parse()
