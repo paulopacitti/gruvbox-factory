@@ -3,6 +3,10 @@ from setuptools import setup
 with open("README.md", encoding="utf-8") as fh:
     long_description = fh.read()
 
+with open("requirements.txt") as fd:
+    requirements = fd.read().splitlines()
+
+
 setup(
     name="gruvbox-factory",
     packages=["factory"],
@@ -16,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={"console_scripts": ["gruvbox-factory= factory.__main__:main"]},
     include_package_data=True,
-    install_requires=["image-go-nord", "rich"],
+    install_requires=requirements,
     keywords=[
         "gruvbox",
         "cli",
