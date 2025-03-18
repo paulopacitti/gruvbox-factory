@@ -14,9 +14,7 @@
 `pip3 install gruvbox-factory`
 
 ## Usage ⌨️
-The `cli` has two modes:
-- 🔮 wizard: type `gruvbox-factory` **anywhere** in your terminal and folllow the instructions ✨
-- 💽 hipster: type `gruvbox-factory -h` and check how to use in CLI mode 😉
+You can type `gruvbox-factory -h` to check out how to use Gruvbox Factory.
 
 ### Credits 🎥
 - 📦 Using [morhetz's gruvbox color scheme](https://github.com/morhetz);
@@ -31,3 +29,10 @@ The `cli` has two modes:
 ## Contributors ✏️ 
 
 - [@H4ppy-04](https://github.com/H4ppy-04)
+- [@Gabulhas](https://github.com/Gabulhas)
+- [@hza2002](https://github.com/hza2002)
+- [@jasonmishi](https://github.com/jasonmishi)
+- [@perpetualCreations](https://github.com/perpetualCreations)
+- [@Kuuhhl](https://github.com/Kuuhhl)
+- [@marcelofern](https://github.com/marcelofern)
+
