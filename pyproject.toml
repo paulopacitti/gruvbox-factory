@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gruvbox-factory"
+version = "1.1.0"
+description = "convert any image to the gruvbox pallete!"
+authors = [{ name = "Paulo Pacitti", email = "ppacitti@outlook.com" }]
+readme = "README.md"
+requires-python = ">=3.13.1"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = [
+    "gruvbox",
+    "cli",
+    "gruvbox-factory",
+    "wallpaper",
+    "image",
+    "image-go-nord",
+    "palette",
+    "factory",
+]
+dependencies = [
+    "certifi==2025.1.31",
+    "charset-normalizer==3.4.1",
+    "ffmpeg-python==0.2.0",
+    "future==1.0.0",
+    "idna==3.10",
+    "image-go-nord==1.2.0",
+    "markdown-it-py==3.0.0",
+    "mdurl==0.1.2",
+    "numpy==2.2.2",
+    "pick==2.4.0",
+    "pillow==11.1.0",
+    "Pygments==2.19.1",
+    "requests==2.32.3",
+    "rich==13.9.4",
+    "setuptools==75.8.0",
+    "urllib3==2.3.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/paulopacitti/gruvbox-factory"
+"Bug Tracker" = "https://github.com/paulopacitti/gruvbox-factory/issues"
+
+[project.scripts]
+gruvbox-factory = "factory.__main__:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["factory"]
+
+[tool.setuptools.package-data]
+factory = ["gruvbox-white.txt", "gruvbox-pink.txt", "gruvbox-mix.txt"]

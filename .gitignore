@@ -6,6 +6,8 @@
 dist/
 build/
 venv/
+__pycache__/
+.python-version
 
 # manufactured images
 factory/*.png
@@ -13,5 +15,3 @@ factory/*.jpg
 
 # === macOS ===
 .DS_Store
-
-__pycache__/

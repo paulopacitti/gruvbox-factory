@@ -6,28 +6,17 @@
 
 ![example of gruvbox-factory](https://raw.githubusercontent.com/paulopacitti/gruvbox-factory/master/example.png)
 
-- A simple `cli` to ~~convert~~ manufacture a [gruvbox](https://github.com/morhetz/gruvbox) themed wallpaper;
-- Now supports "hipster" mode, passing image paths as arguments;
-- Now has two different palettes: *panther* "pink" and *snoopy* white;
+- A simple `cli` to ~~convert~~ manufacture a [gruvbox](https://github.com/morhetz/gruvbox) themed wallpaper.
+- Three color palettes: *panther* "pink", *snoopy* white and "smooth" mix.
 
-## Installation ⬇️
-`pip3 install gruvbox-factory`
+## Installation ️and usage
+`pip install gruvbox-factory`
 
-## Usage ⌨️
 You can type `gruvbox-factory -h` to check out how to use Gruvbox Factory.
 
-### Credits 🎥
-- 📦 Using [morhetz's gruvbox color scheme](https://github.com/morhetz);
-- 🐈 **Made** with [Schrodinger-Hat's ImageGoNord](https://github.com/Schroedinger-Hat/ImageGoNord), but with the gruvbox palette;
-- 💄 **Text User Interface (TUI)** made with [rich](https://github.com/willmcgugan/rich)
 
-## Contributing 💕
-- ⭐ If you like it, leave your **star** in this project 
-- 💟 If you would like to complain/suggest/contribute to this project, **feel free to open a issue**
-- ✏️ Add your name in the **"Contributors** section after when opening a PR
-
-## Contributors ✏️ 
-
+## Contributors
+Thanks for all the have been working with me to make this tool to craft beautiful wallpapers 🧡 
 - [@H4ppy-04](https://github.com/H4ppy-04)
 - [@Gabulhas](https://github.com/Gabulhas)
 - [@hza2002](https://github.com/hza2002)
@@ -36,3 +25,4 @@ You can type `gruvbox-factory -h` to check out how to use Gruvbox Factory.
 - [@Kuuhhl](https://github.com/Kuuhhl)
 - [@marcelofern](https://github.com/marcelofern)
 
+Also, I could not do this without the [ImageGoNord](https://github.com/Schroedinger-Hat/ImageGoNord-Web) project, go check them out!
